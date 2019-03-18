@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * The type Secured controller.
  */
-@RestController("campaign")
+@RestController
 public class CampaignController {
 
     /**
@@ -19,8 +19,8 @@ public class CampaignController {
      * @return some string...
      */
     @Secured(scope = Secured.Scope.CAMPAIGN_MANAGEMENT, actions = CampaignRead.class)
-    @GetMapping("{id}")
+    @GetMapping("/campaign/{id}")
     public ResponseEntity<String> sayGreeting(@PathVariable String id) {
-        return ResponseEntity.ok("You're wanna access entity with an id: , " + id);
+        return ResponseEntity.ok("You're wanna access entity with an id: " + id);
     }
 }

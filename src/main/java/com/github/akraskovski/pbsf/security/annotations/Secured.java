@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
  * Define the availability of the acquiring resource.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target(ElementType.METHOD)
 public @interface Secured {
 
     /**
@@ -29,6 +29,14 @@ public @interface Secured {
      * @return the actions
      */
     Class<? extends EntityAction>[] actions();
+
+    /**
+     * Says whether to throw an exception on authentication failure or just skip this request and return a stub.
+     *
+     * @return needles of throwing an exception
+     * @implNote temporary annotation value, should be implemented only for easiest testing...
+     */
+    boolean faultTolerant() default false;
 
     /**
      * The enum Scope.
