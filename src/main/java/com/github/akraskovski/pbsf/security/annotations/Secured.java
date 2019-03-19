@@ -22,8 +22,20 @@ public @interface Secured {
      *
      * @return scope value
      */
-    //todo divide into a classes with pre-defined entities scope
     Scope scope();
+
+    /**
+     * Accessing entity types.
+     * <p>
+     * !WARNING!
+     * If none is specified the default value will be selected from the scope.getEntities()
+     * !WARNING!
+     *
+     * @return available entity types
+     */
+    //todo: find a way to setup default value from the selected scope entities.
+    // possible it could be in custom beanFactoryPostProcessor
+    Class<?>[] entities() default {};
 
     /**
      * Allowed enums types over the accessing entity.

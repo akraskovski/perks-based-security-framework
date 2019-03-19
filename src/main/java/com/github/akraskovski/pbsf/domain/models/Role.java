@@ -27,6 +27,7 @@ public abstract class Role {
      * @return the result of accessing the resource
      */
     public boolean hasAccess(Secured methodAnnotation) {
+        //todo add validation by entity types
         return scopes.contains(methodAnnotation.scope()) &&
             actions.containsAll(Arrays.asList(methodAnnotation.actions()));
     }
