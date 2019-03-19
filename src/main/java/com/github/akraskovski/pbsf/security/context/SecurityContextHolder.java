@@ -1,5 +1,6 @@
 package com.github.akraskovski.pbsf.security.context;
 
+import com.github.akraskovski.pbsf.domain.models.User;
 import org.springframework.util.Assert;
 
 import java.util.Optional;
@@ -7,31 +8,41 @@ import java.util.Optional;
 /**
  * User's security context holder class.
  */
-public class SecurityContextHolder {
+public final class SecurityContextHolder {
 
-    //todo instead of Object here must be authorized user instance.
-    private static final ThreadLocal<Object> context = new ThreadLocal<>();
+    private static final ThreadLocal<User> CONTEXT = new ThreadLocal<>();
 
-    public void clearContext() {
-        context.remove();
+    private SecurityContextHolder() {
+        // nothing to do
     }
 
-    public Object getContext() {
-        return Optional.ofNullable(context.get())
-            .orElseGet(() -> {
-                var ctx = createEmptyContext();
-                context.set(ctx);
-
-                return ctx;
-            });
+    /**
+     * Clear context.
+     */
+    public static void clearContext() {
+        CONTEXT.remove();
     }
 
-    public void setContext(SecurityContextHolder context) {
+    /**
+     * Gets context.
+     *
+     * @return the context
+     */
+    public static Optional<User> getContext() {
+        return Optional.ofNullable(CONTEXT.get());
+    }
+
+    /**
+     * Sets context.
+     *
+     * @param context the context
+     */
+    public static void setContext(User context) {
         Assert.notNull(context, "Only non-null SecurityContext instances are permitted");
-        SecurityContextHolder.context.set(context);
+        SecurityContextHolder.CONTEXT.set(context);
     }
 
-    private Object createEmptyContext() {
-        return new Object();
+    private User createEmptyContext() {
+        return new User();
     }
 }

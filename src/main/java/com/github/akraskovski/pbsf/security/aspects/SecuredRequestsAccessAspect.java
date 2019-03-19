@@ -15,11 +15,15 @@ import java.util.Arrays;
 @Aspect
 public class SecuredRequestsAccessAspect {
 
+    @Pointcut("target(com.github.akraskovski.pbsf.security.endpoints.SecuredEntityEndpoint)")
+    private void securedEndpoint() {
+    }
+
     @Pointcut("@annotation(annotation)")
     private void securedMethod(Secured annotation) {
     }
 
-    @Around(value = "securedMethod(secured)", argNames = "pjp,secured")
+    @Around(value = "securedMethod(secured) && securedEndpoint()", argNames = "pjp,secured")
     private Object processRequest(final ProceedingJoinPoint pjp, Secured secured) throws Throwable {
         System.out.println("Scope:" + secured.scope());
         System.out.println("Actions:" + Arrays.toString(secured.actions()));

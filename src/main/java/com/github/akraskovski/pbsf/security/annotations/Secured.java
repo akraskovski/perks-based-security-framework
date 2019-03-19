@@ -1,5 +1,6 @@
 package com.github.akraskovski.pbsf.security.annotations;
 
+import com.github.akraskovski.pbsf.security.enums.AccessLevel;
 import com.github.akraskovski.pbsf.security.enums.EntityAction;
 import com.github.akraskovski.pbsf.security.enums.Scope;
 
@@ -30,6 +31,13 @@ public @interface Secured {
      * @return the enums
      */
     EntityAction[] actions();
+
+    /**
+     * Entity access level restriction
+     *
+     * @return the access level
+     */
+    AccessLevel accessLevel();
 
     /**
      * Says whether to throw an exception on authentication failure or just skip this request and return a stub.
