@@ -42,7 +42,7 @@ public class SecuredAccessManager {
         var methodArguments = buildMethodArguments(pjp);
         var endpoint = (SecuredEntityEndpoint<?>) pjp.getTarget();
         var processingEntity = endpoint.getProcessingEntity();
-        var entityOwner = Optional.ofNullable(methodArguments.get("id"))
+        var entityOwnerId = Optional.ofNullable(methodArguments.get("id"))
             .map(String::valueOf)
             .map(endpoint::findOwner)
             .orElse(null);

@@ -1,9 +1,7 @@
 package com.github.akraskovski.pbsf.controllers;
 
 import com.github.akraskovski.pbsf.domain.models.Campaign;
-import com.github.akraskovski.pbsf.domain.models.User;
 import com.github.akraskovski.pbsf.domain.repositories.CampaignRepository;
-import com.github.akraskovski.pbsf.domain.repositories.UserRepository;
 import com.github.akraskovski.pbsf.security.access.CoreCampaignAccessDefinition;
 import com.github.akraskovski.pbsf.security.access.EntityAccessDefinition;
 import com.github.akraskovski.pbsf.security.annotations.Secured;
@@ -27,15 +25,12 @@ public class CampaignController implements SecuredEntityEndpoint<Campaign> {
 
     private final EntityAccessDefinition entityAccessDefinition;
     private final CampaignRepository campaignRepository;
-    private final UserRepository userRepository;
 
     @Autowired
     public CampaignController(CoreCampaignAccessDefinition entityAccessDefinition,
-                              CampaignRepository campaignRepository,
-                              UserRepository userRepository) {
+                              CampaignRepository campaignRepository) {
         this.entityAccessDefinition = entityAccessDefinition;
         this.campaignRepository = campaignRepository;
-        this.userRepository = userRepository;
     }
 
     @Override
@@ -44,11 +39,8 @@ public class CampaignController implements SecuredEntityEndpoint<Campaign> {
     }
 
     @Override
-    public User findOwner(String id) {
-        // todo think how to re-implement.
-        return userRepository
-            .findById(entityAccessDefinition.whoOwns(id))
-            .get();
+    public EntityAccessDefinition getEntityAccessDefinition() {
+        return entityAccessDefinition;
     }
 
     /**

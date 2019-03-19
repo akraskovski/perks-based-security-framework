@@ -1,6 +1,6 @@
 package com.github.akraskovski.pbsf.security.endpoints;
 
-import com.github.akraskovski.pbsf.domain.models.User;
+import com.github.akraskovski.pbsf.security.access.EntityAccessDefinition;
 
 /**
  * Base endpoint securing behavior rules
@@ -17,10 +17,19 @@ public interface SecuredEntityEndpoint<Entity> {
     Class<Entity> getProcessingEntity();
 
     /**
+     * Gets entity access definition.
+     *
+     * @return the entity access definition
+     */
+    EntityAccessDefinition getEntityAccessDefinition();
+
+    /**
      * Find owner object.
      *
      * @param id the id
      * @return the object
      */
-    User findOwner(String id);
+    default String findOwner(String id) {
+        return getEntityAccessDefinition().whoOwns(id);
+    }
 }
