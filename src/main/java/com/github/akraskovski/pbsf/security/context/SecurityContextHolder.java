@@ -18,12 +18,12 @@ public class SecurityContextHolder {
 
     public Object getContext() {
         return Optional.ofNullable(context.get())
-                .orElseGet(() -> {
-                    var ctx = createEmptyContext();
-                    context.set(ctx);
+            .orElseGet(() -> {
+                var ctx = createEmptyContext();
+                context.set(ctx);
 
-                    return ctx;
-                });
+                return ctx;
+            });
     }
 
     public void setContext(SecurityContextHolder context) {

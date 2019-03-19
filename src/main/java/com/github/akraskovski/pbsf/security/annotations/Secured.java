@@ -1,6 +1,7 @@
 package com.github.akraskovski.pbsf.security.annotations;
 
-import com.github.akraskovski.pbsf.security.actions.EntityAction;
+import com.github.akraskovski.pbsf.security.enums.EntityAction;
+import com.github.akraskovski.pbsf.security.enums.Scope;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -17,18 +18,18 @@ import java.lang.annotation.Target;
 public @interface Secured {
 
     /**
-     * Allowed scope being access by a user.
+     * Allowed scope(flow) being access by a user.
      *
      * @return scope value
      */
     Scope scope();
 
     /**
-     * Allowed actions types over the accessing entity.
+     * Allowed enums types over the accessing entity.
      *
-     * @return the actions
+     * @return the enums
      */
-    Class<? extends EntityAction>[] actions();
+    EntityAction[] actions();
 
     /**
      * Says whether to throw an exception on authentication failure or just skip this request and return a stub.
@@ -37,22 +38,4 @@ public @interface Secured {
      * @implNote temporary annotation value, should be implemented only for easiest testing...
      */
     boolean faultTolerant() default false;
-
-    /**
-     * The enum Scope.
-     */
-    enum Scope {
-        /**
-         * Campaign management scope.
-         */
-        CAMPAIGN_MANAGEMENT,
-        /**
-         * Project management scope.
-         */
-        PROJECT_MANAGEMENT,
-        /**
-         * Something else scope.
-         */
-        SOMETHING_ELSE
-    }
 }
