@@ -1,21 +1,19 @@
 package com.github.akraskovski.pbsf;
 
 import com.github.akraskovski.pbsf.domain.models.Campaign;
-import com.github.akraskovski.pbsf.domain.models.Role;
 import com.github.akraskovski.pbsf.domain.models.User;
+import com.github.akraskovski.pbsf.domain.models.access.levels.CompleteAccessLevel;
+import com.github.akraskovski.pbsf.domain.models.access.levels.OwnershipAccessLevel;
+import com.github.akraskovski.pbsf.domain.models.roles.AdminRole;
+import com.github.akraskovski.pbsf.domain.models.roles.ExecutorRole;
+import com.github.akraskovski.pbsf.domain.models.roles.OperatorRole;
+import com.github.akraskovski.pbsf.domain.models.roles.SupervisorRole;
 import com.github.akraskovski.pbsf.domain.repositories.CampaignRepository;
 import com.github.akraskovski.pbsf.domain.repositories.UserRepository;
-import com.github.akraskovski.pbsf.security.enums.AccessLevel;
-import com.github.akraskovski.pbsf.security.enums.EntityAction;
-import com.github.akraskovski.pbsf.security.enums.Scope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Spring boot's bootstrap class.
@@ -34,23 +32,40 @@ public class Application implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        var role = new Role()
-            .setScopes(Set.of(Scope.CAMPAIGN_MANAGEMENT))
-            .setAccessLevel(AccessLevel.COMPLETE)
-            .setActions(new HashSet<>(Arrays.asList(EntityAction.values())));
-
-        var user = new User()
-            .setId("1")
+        var admin = new User()
+            .setId("admin")
             .setEmail("email@email.com")
             .setPassword("password")
-            .setRole(role);
+            .setRole(new AdminRole())
+            .setAccessLevel(new CompleteAccessLevel());
+        var operator = new User()
+            .setId("operator")
+            .setEmail("email@email.com")
+            .setPassword("password")
+            .setRole(new OperatorRole())
+            .setAccessLevel(new OwnershipAccessLevel());
+        var executor = new User()
+            .setId("executor")
+            .setEmail("email@email.com")
+            .setPassword("password")
+            .setRole(new ExecutorRole())
+            .setAccessLevel(new OwnershipAccessLevel());
+        var supervisor = new User()
+            .setId("supervisor")
+            .setEmail("email@email.com")
+            .setPassword("password")
+            .setRole(new SupervisorRole())
+            .setAccessLevel(new OwnershipAccessLevel());
 
         var campaign = new Campaign()
             .setId("1")
             .setName("name")
-            .setOwner(user);
+            .setOwner(admin);
 
-        userRepository.create(user);
+        userRepository.create(admin);
+        userRepository.create(operator);
+        userRepository.create(executor);
+        userRepository.create(supervisor);
         campaignRepository.create(campaign);
     }
 

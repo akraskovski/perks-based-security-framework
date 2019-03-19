@@ -1,13 +1,14 @@
 package com.github.akraskovski.pbsf.security.aspects;
 
+import com.github.akraskovski.pbsf.domain.repositories.UserRepository;
 import com.github.akraskovski.pbsf.security.annotations.Secured;
+import com.github.akraskovski.pbsf.security.context.SecurityContextHolder;
 import com.github.akraskovski.pbsf.security.managers.SecuredAccessManager;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.context.request.RequestContextHolder;
 
 /**
  * General application security entry point.
@@ -16,10 +17,12 @@ import org.springframework.web.context.request.RequestContextHolder;
 public class SecuredRequestsAccessAspect {
 
     private final SecuredAccessManager accessManager;
+    private final UserRepository userRepository;
 
     @Autowired
-    public SecuredRequestsAccessAspect(SecuredAccessManager accessManager) {
+    public SecuredRequestsAccessAspect(SecuredAccessManager accessManager, UserRepository userRepository) {
         this.accessManager = accessManager;
+        this.userRepository = userRepository;
     }
 
     @Pointcut("target(com.github.akraskovski.pbsf.security.endpoints.SecuredEntityEndpoint)")
@@ -36,17 +39,17 @@ public class SecuredRequestsAccessAspect {
             throw new RuntimeException("Unauthorized, 401 should be thrown");
         }
 
-        if (accessManager.hasAccess(pjp, secured)) {
-            return pjp.proceed();
+        if (!accessManager.hasAccess(pjp, secured)) {
+            throw new RuntimeException("Forbidden, 403");
         }
 
-        throw new RuntimeException("Forbidden, 403");
+        return pjp.proceed();
     }
 
     private boolean isAlreadyAuthorized() {
-        var sessionId = RequestContextHolder.currentRequestAttributes().getSessionId();
+        // imagine that we have working authentication mechanism which accepts user request.
+        SecurityContextHolder.setContext(userRepository.findById("operator").get());
 
-        // todo context holder checks for current user
-        return true;
+        return SecurityContextHolder.getContext().isPresent();
     }
 }

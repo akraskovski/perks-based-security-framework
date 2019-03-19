@@ -1,53 +1,41 @@
 package com.github.akraskovski.pbsf.domain.models;
 
-import com.github.akraskovski.pbsf.security.enums.AccessLevel;
+import com.github.akraskovski.pbsf.security.annotations.Secured;
 import com.github.akraskovski.pbsf.security.enums.EntityAction;
 import com.github.akraskovski.pbsf.security.enums.Scope;
 
+import java.util.Arrays;
 import java.util.Set;
 
 /**
  * The domain role entity.
  */
-public class Role {
+public abstract class Role {
 
-    private Set<EntityAction> actions;
-    private Set<Scope> scopes;
-    private AccessLevel accessLevel;
+    private final Set<EntityAction> actions;
+    private final Set<Scope> scopes;
+
+    protected Role(Set<EntityAction> actions, Set<Scope> scopes) {
+        this.actions = actions;
+        this.scopes = scopes;
+    }
 
     /**
      * Has access validation contract.
      *
+     * @param methodAnnotation the method annotation metadata
      * @return the result of accessing the resource
      */
-    public boolean hasAccess(/*todo what arguments should be passed here? */) {
-        return true;
+    public boolean hasAccess(Secured methodAnnotation) {
+        return scopes.contains(methodAnnotation.scope()) &&
+            actions.containsAll(Arrays.asList(methodAnnotation.actions()));
     }
 
     public Set<EntityAction> getActions() {
         return actions;
     }
 
-    public Role setActions(Set<EntityAction> actions) {
-        this.actions = actions;
-        return this;
-    }
-
     public Set<Scope> getScopes() {
         return scopes;
-    }
-
-    public Role setScopes(Set<Scope> scopes) {
-        this.scopes = scopes;
-        return this;
-    }
-
-    public AccessLevel getAccessLevel() {
-        return accessLevel;
-    }
-
-    public Role setAccessLevel(AccessLevel accessLevel) {
-        this.accessLevel = accessLevel;
-        return this;
     }
 }

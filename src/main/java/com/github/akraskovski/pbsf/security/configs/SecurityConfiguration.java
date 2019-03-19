@@ -1,5 +1,6 @@
 package com.github.akraskovski.pbsf.security.configs;
 
+import com.github.akraskovski.pbsf.domain.repositories.UserRepository;
 import com.github.akraskovski.pbsf.security.aspects.SecuredRequestsAccessAspect;
 import com.github.akraskovski.pbsf.security.managers.SecuredAccessManager;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +20,8 @@ public class SecurityConfiguration {
      * @return the secured requests access aspect
      */
     @Bean
-    public SecuredRequestsAccessAspect securedRequestsAccessAspect(SecuredAccessManager accessManager) {
-        return new SecuredRequestsAccessAspect(accessManager);
+    public SecuredRequestsAccessAspect securedRequestsAccessAspect(SecuredAccessManager accessManager,
+                                                                   UserRepository userRepository) {
+        return new SecuredRequestsAccessAspect(accessManager, userRepository);
     }
 }

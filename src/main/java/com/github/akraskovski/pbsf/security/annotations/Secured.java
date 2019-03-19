@@ -1,6 +1,5 @@
 package com.github.akraskovski.pbsf.security.annotations;
 
-import com.github.akraskovski.pbsf.security.enums.AccessLevel;
 import com.github.akraskovski.pbsf.security.enums.EntityAction;
 import com.github.akraskovski.pbsf.security.enums.Scope;
 
@@ -23,6 +22,7 @@ public @interface Secured {
      *
      * @return scope value
      */
+    //todo divide into a classes with pre-defined entities scope
     Scope scope();
 
     /**
@@ -31,12 +31,4 @@ public @interface Secured {
      * @return the enums
      */
     EntityAction[] actions();
-
-    /**
-     * Entity access level restriction
-     *
-     * @return the access level
-     */
-    // todo: is it still be here?
-    AccessLevel accessLevel();
 }

@@ -9,9 +9,10 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static java.util.Optional.ofNullable;
 
 /**
  * The type Secured access manager.
@@ -23,42 +24,31 @@ public class SecuredAccessManager {
      * Has access validation method.
      * Checks the resource owner access with acquiring from request user.
      *
-     * @param pjp              the pjp
-     * @param methodAnnotation the method annotation
-     * @return the boolean
+     * @param proceedingJoinPoint the proceedingJoinPoint
+     * @param methodAnnotation    the method annotation
+     * @return the verification result
      */
-    public boolean hasAccess(ProceedingJoinPoint pjp, Secured methodAnnotation) {
-        // Not really necessary that all of these fields will come useful in future.
-        // So here just extracted all available variables which could be used in validation.
-        var methodScope = methodAnnotation.scope();
-        var methodActions = methodAnnotation.actions();
-        var methodAccessLevel = methodAnnotation.accessLevel();
+    public boolean hasAccess(ProceedingJoinPoint proceedingJoinPoint, Secured methodAnnotation) {
         var currentUser = SecurityContextHolder
             .getContext()
-            // todo: change these lines when context holder will be ready
-            .orElseGet(User::new);
-//            .orElseThrow(() -> new RuntimeException("Unauthorized, 401 should be thrown"));
-        var userRole = currentUser.getRole();
-        var methodArguments = buildMethodArguments(pjp);
-        var endpoint = (SecuredEntityEndpoint<?>) pjp.getTarget();
-        var processingEntity = endpoint.getProcessingEntity();
-        var entityOwnerId = Optional.ofNullable(methodArguments.get("id"))
+            .orElseThrow(() -> new RuntimeException("Unauthorized, 401 should be thrown"));
+
+        return approvedByAccessLevel(proceedingJoinPoint, currentUser) &&
+            approvedByScopeAndActions(methodAnnotation, currentUser);
+    }
+
+    private boolean approvedByAccessLevel(ProceedingJoinPoint proceedingJoinPoint, User currentUser) {
+        var methodArguments = buildMethodArguments(proceedingJoinPoint);
+        var endpoint = (SecuredEntityEndpoint) proceedingJoinPoint.getTarget();
+
+        return ofNullable(methodArguments.get("id"))
             .map(String::valueOf)
-            .map(endpoint::findOwner)
-            .orElse(null);
+            .map(id -> currentUser.getAccessLevel().accept(endpoint.getEntityAccessDefinition(), id, currentUser))
+            .orElse(true);
+    }
 
-        // todo: not clear we'll validate read/write/operate actions here
-        // todo: need to define steps.
-        // ?
-        userRole.hasAccess();
-
-        // 1.
-
-        // 2.
-
-        // 3.
-
-        return true;
+    private boolean approvedByScopeAndActions(Secured methodAnnotation, User currentUser) {
+        return currentUser.getRole().hasAccess(methodAnnotation);
     }
 
     private Map<String, Object> buildMethodArguments(ProceedingJoinPoint pjp) {
@@ -68,6 +58,7 @@ public class SecuredAccessManager {
         return IntStream
             .range(0, argsNames.length)
             .boxed()
+            .filter(it -> argsValues[it] != null)
             .collect(Collectors.toMap(it -> argsNames[it], it -> argsValues[it]));
     }
 }

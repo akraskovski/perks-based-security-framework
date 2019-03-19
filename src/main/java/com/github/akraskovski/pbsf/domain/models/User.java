@@ -9,6 +9,7 @@ public class User {
     private String email;
     private String password;
     private Role role;
+    private AccessLevel accessLevel;
 
     public String getId() {
         return id;
@@ -43,6 +44,15 @@ public class User {
 
     public User setRole(Role role) {
         this.role = role;
+        return this;
+    }
+
+    public AccessLevel getAccessLevel() {
+        return accessLevel;
+    }
+
+    public User setAccessLevel(AccessLevel accessLevel) {
+        this.accessLevel = accessLevel;
         return this;
     }
 }
