@@ -9,9 +9,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Secured method/classes access annotation.
+ * Secured method access annotation.
  * <p>
- * Define the availability of the acquiring resource.
+ * Defines the availability of the acquiring resource.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
