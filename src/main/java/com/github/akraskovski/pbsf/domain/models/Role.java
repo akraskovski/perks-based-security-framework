@@ -15,6 +15,15 @@ public class Role {
     private Set<Scope> scopes;
     private AccessLevel accessLevel;
 
+    /**
+     * Has access validation contract.
+     *
+     * @return the result of accessing the resource
+     */
+    public boolean hasAccess(/*todo what arguments should be passed here? */) {
+        return true;
+    }
+
     public Set<EntityAction> getActions() {
         return actions;
     }

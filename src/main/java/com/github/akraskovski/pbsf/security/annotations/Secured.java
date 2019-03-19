@@ -37,13 +37,6 @@ public @interface Secured {
      *
      * @return the access level
      */
+    // todo: is it still be here?
     AccessLevel accessLevel();
-
-    /**
-     * Says whether to throw an exception on authentication failure or just skip this request and return a stub.
-     *
-     * @return needles of throwing an exception
-     * @implNote temporary annotation value, should be implemented only for easiest testing...
-     */
-    boolean faultTolerant() default false;
 }

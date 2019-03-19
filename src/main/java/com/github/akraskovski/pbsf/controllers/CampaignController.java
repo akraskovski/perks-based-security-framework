@@ -15,12 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * The type Secured controller.
  */
 @RestController
+@RequestMapping("campaign")
 public class CampaignController implements SecuredEntityEndpoint<Campaign> {
 
     private final EntityAccessDefinition entityAccessDefinition;
@@ -55,7 +57,7 @@ public class CampaignController implements SecuredEntityEndpoint<Campaign> {
      * @return found campaign or thrown exception
      */
     @Secured(scope = Scope.CAMPAIGN_MANAGEMENT, actions = EntityAction.READ, accessLevel = AccessLevel.COMPLETE)
-    @GetMapping("/campaign/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<Campaign> getById(@PathVariable String id) {
         return ResponseEntity.ok(campaignRepository.findById(id).orElseThrow());
     }

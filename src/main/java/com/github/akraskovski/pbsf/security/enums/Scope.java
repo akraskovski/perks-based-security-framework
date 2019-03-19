@@ -10,7 +10,7 @@ public enum Scope {
      */
     CAMPAIGN_MANAGEMENT,
     /**
-     * Project management scope.
+     * Publisher management scope.
      */
     PUBLISHER_MANAGEMENT,
     /**
