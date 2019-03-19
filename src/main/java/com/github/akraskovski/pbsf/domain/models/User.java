@@ -5,9 +5,19 @@ package com.github.akraskovski.pbsf.domain.models;
  */
 public class User {
 
+    private String id;
     private String email;
     private String password;
     private Role role;
+
+    public String getId() {
+        return id;
+    }
+
+    public User setId(String id) {
+        this.id = id;
+        return this;
+    }
 
     public String getEmail() {
         return email;

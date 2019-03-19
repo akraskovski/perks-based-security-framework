@@ -1,5 +1,7 @@
 package com.github.akraskovski.pbsf.security.endpoints;
 
+import com.github.akraskovski.pbsf.domain.models.User;
+
 /**
  * Base endpoint securing behavior rules
  *
@@ -17,9 +19,8 @@ public interface SecuredEntityEndpoint<Entity> {
     /**
      * Find owner object.
      *
-     * @param entity the entity
+     * @param id the id
      * @return the object
      */
-//todo here should be an access definition
-    Object findOwner(Entity entity);
+    User findOwner(String id);
 }

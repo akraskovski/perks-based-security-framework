@@ -1,6 +1,7 @@
 package com.github.akraskovski.pbsf.security.configs;
 
 import com.github.akraskovski.pbsf.security.aspects.SecuredRequestsAccessAspect;
+import com.github.akraskovski.pbsf.security.managers.SecuredAccessManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -18,7 +19,7 @@ public class SecurityConfiguration {
      * @return the secured requests access aspect
      */
     @Bean
-    public SecuredRequestsAccessAspect securedRequestsAccessAspect() {
-        return new SecuredRequestsAccessAspect();
+    public SecuredRequestsAccessAspect securedRequestsAccessAspect(SecuredAccessManager accessManager) {
+        return new SecuredRequestsAccessAspect(accessManager);
     }
 }

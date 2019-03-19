@@ -1,19 +1,26 @@
 package com.github.akraskovski.pbsf.security.aspects;
 
 import com.github.akraskovski.pbsf.security.annotations.Secured;
+import com.github.akraskovski.pbsf.security.managers.SecuredAccessManager;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.request.RequestContextHolder;
-
-import java.util.Arrays;
 
 /**
  * General application security entry point.
  */
 @Aspect
 public class SecuredRequestsAccessAspect {
+
+    private final SecuredAccessManager accessManager;
+
+    @Autowired
+    public SecuredRequestsAccessAspect(SecuredAccessManager accessManager) {
+        this.accessManager = accessManager;
+    }
 
     @Pointcut("target(com.github.akraskovski.pbsf.security.endpoints.SecuredEntityEndpoint)")
     private void securedEndpoint() {
@@ -25,20 +32,21 @@ public class SecuredRequestsAccessAspect {
 
     @Around(value = "securedMethod(secured) && securedEndpoint()", argNames = "pjp,secured")
     private Object processRequest(final ProceedingJoinPoint pjp, Secured secured) throws Throwable {
-        System.out.println("Scope:" + secured.scope());
-        System.out.println("Actions:" + Arrays.toString(secured.actions()));
+        if (!isAlreadyAuthorized()) {
+            throw new RuntimeException("Unauthorized, 401 should be thrown");
+        }
 
-        if (isAlreadyAuthorized()) {
+        if (accessManager.hasAccess(pjp, secured)) {
             return pjp.proceed();
         }
 
-        return pjp.proceed();
+        throw new RuntimeException("Forbidden, 403");
     }
 
     private boolean isAlreadyAuthorized() {
         var sessionId = RequestContextHolder.currentRequestAttributes().getSessionId();
 
         // todo context holder checks for current user
-        return false;
+        return true;
     }
 }
