@@ -35,6 +35,11 @@ public class CampaignController implements SecuredEntityEndpoint {
     }
 
     @Override
+    public Class<? extends Object> getEntityClass() {
+        return Campaign.class;
+    }
+
+    @Override
     public EntityAccessDefinition getEntityAccessDefinition() {
         return entityAccessDefinition;
     }

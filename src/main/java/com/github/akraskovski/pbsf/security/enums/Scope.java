@@ -18,35 +18,35 @@ public enum Scope {
      * Campaign management scope.
      */
     CAMPAIGN_MANAGEMENT(
-            List.of(
-                    Campaign.class,
-                    AdGroup.class,
-                    Creative.class,
-                    Advertiser.class
-            )
+        List.of(
+            Campaign.class,
+            AdGroup.class,
+            Creative.class,
+            Advertiser.class
+        )
     ),
 
     /**
      * Publisher management scope.
      */
     PUBLISHER_MANAGEMENT(
-            List.of(
-                    Publisher.class
-            )
+        List.of(
+            Publisher.class
+        )
     ),
 
     /**
      * User management scope.
      */
     USER_MANAGEMENT(
-            List.of(
-                    User.class
-            )
+        List.of(
+            User.class
+        )
     );
 
-    private final List<Class> entityTypes;
+    private final List<Class<? extends Object>> entityTypes;
 
-    Scope(final List<Class> entityTypes) {
+    Scope(final List<Class<? extends Object>> entityTypes) {
         this.entityTypes = entityTypes;
     }
 
@@ -55,7 +55,7 @@ public enum Scope {
      *
      * @return the entity types
      */
-    public List<Class> getEntityTypes() {
+    public List<Class<? extends Object>> getEntityTypes() {
         return entityTypes;
     }
 

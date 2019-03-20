@@ -48,7 +48,7 @@ public class SecuredRequestsAccessAspect {
 
     private boolean isAlreadyAuthorized() {
         // imagine that we have working authentication mechanism which accepts user request.
-        SecurityContextHolder.setContext(userRepository.findById("operator").get());
+        SecurityContextHolder.setContext(userRepository.findById("admin").get());
 
         return SecurityContextHolder.getContext().isPresent();
     }

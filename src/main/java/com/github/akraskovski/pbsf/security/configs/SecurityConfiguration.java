@@ -27,8 +27,6 @@ import java.util.stream.Stream;
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 public class SecurityConfiguration {
 
-    private static List<String> securedEndpointBeanNames;
-
     /**
      * Secured requests access aspect.
      *
@@ -40,7 +38,8 @@ public class SecurityConfiguration {
         return new SecuredRequestsAccessAspect(accessManager, userRepository);
     }
 
-    @Bean
+//    @Bean
+//    todo try to fix it soon
     public static BeanFactoryPostProcessor securedAnnotationEntitiesPostProcessor() {
         return beanFactory -> {
             try {
