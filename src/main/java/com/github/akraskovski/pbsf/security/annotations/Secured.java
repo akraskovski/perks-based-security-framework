@@ -9,9 +9,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Secured method/classes access annotation.
+ * Secured method access annotation.
  * <p>
- * Define the availability of the acquiring resource.
+ * Defines the availability of the acquiring resource.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
@@ -22,8 +22,18 @@ public @interface Secured {
      *
      * @return scope value
      */
-    //todo divide into a classes with pre-defined entities scope
     Scope scope();
+
+    /**
+     * Accessing entity types.
+     * <p>
+     * !WARNING!
+     * If none is specified the default value will be selected from the scope.getEntities()
+     * !WARNING!
+     *
+     * @return available entity types
+     */
+    Class<? extends Object>[] entities() default {};
 
     /**
      * Allowed enums types over the accessing entity.

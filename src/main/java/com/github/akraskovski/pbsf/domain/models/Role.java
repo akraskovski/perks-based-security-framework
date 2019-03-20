@@ -23,12 +23,18 @@ public abstract class Role {
     /**
      * Has access validation contract.
      *
-     * @param methodAnnotation the method annotation metadata
+     * @param methodAnnotation     the method annotation metadata
+     * @param accessingEntityClass the accessing entity class
      * @return the result of accessing the resource
      */
-    public boolean hasAccess(Secured methodAnnotation) {
+    public boolean hasAccess(Secured methodAnnotation, Class<? extends Object> accessingEntityClass) {
+        var availableEntities = methodAnnotation.entities().length == 0
+            ? methodAnnotation.scope().getEntityTypes()
+            : Arrays.asList(methodAnnotation.entities());
+
         return scopes.contains(methodAnnotation.scope()) &&
-            actions.containsAll(Arrays.asList(methodAnnotation.actions()));
+            actions.containsAll(Arrays.asList(methodAnnotation.actions())) &&
+            availableEntities.stream().anyMatch(available -> available.equals(accessingEntityClass));
     }
 
     public Set<EntityAction> getActions() {

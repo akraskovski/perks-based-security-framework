@@ -1,6 +1,7 @@
 package com.github.akraskovski.pbsf.security.managers;
 
 import com.github.akraskovski.pbsf.domain.models.User;
+import com.github.akraskovski.pbsf.security.access.EntityAccessDefinition;
 import com.github.akraskovski.pbsf.security.annotations.Secured;
 import com.github.akraskovski.pbsf.security.context.SecurityContextHolder;
 import com.github.akraskovski.pbsf.security.endpoints.SecuredEntityEndpoint;
@@ -32,23 +33,27 @@ public class SecuredAccessManager {
         var currentUser = SecurityContextHolder
             .getContext()
             .orElseThrow(() -> new RuntimeException("Unauthorized, 401 should be thrown"));
+        var endpoint = (SecuredEntityEndpoint) proceedingJoinPoint.getTarget();
+        var entityAccessDefinition = endpoint.getEntityAccessDefinition();
+        var entityClass = endpoint.getEntityClass();
 
-        return approvedByAccessLevel(proceedingJoinPoint, currentUser) &&
-            approvedByScopeAndActions(methodAnnotation, currentUser);
+        return approvedByAccessLevel(proceedingJoinPoint, currentUser, entityAccessDefinition) &&
+            approvedByScopeAndActions(methodAnnotation, currentUser, entityClass);
     }
 
-    private boolean approvedByAccessLevel(ProceedingJoinPoint proceedingJoinPoint, User currentUser) {
-        var methodArguments = buildMethodArguments(proceedingJoinPoint);
-        var endpoint = (SecuredEntityEndpoint) proceedingJoinPoint.getTarget();
-
-        return ofNullable(methodArguments.get("id"))
+    private boolean approvedByAccessLevel(ProceedingJoinPoint proceedingJoinPoint,
+                                          User currentUser,
+                                          EntityAccessDefinition entityAccessDefinition) {
+        return ofNullable(buildMethodArguments(proceedingJoinPoint).get("id"))
             .map(String::valueOf)
-            .map(id -> currentUser.getAccessLevel().accept(endpoint.getEntityAccessDefinition(), id, currentUser))
+            .map(id -> currentUser.getAccessLevel().accept(entityAccessDefinition, id, currentUser))
             .orElse(true);
     }
 
-    private boolean approvedByScopeAndActions(Secured methodAnnotation, User currentUser) {
-        return currentUser.getRole().hasAccess(methodAnnotation);
+    private boolean approvedByScopeAndActions(Secured methodAnnotation,
+                                              User currentUser,
+                                              Class<?> accessingEntityClass) {
+        return currentUser.getRole().hasAccess(methodAnnotation, accessingEntityClass);
     }
 
     private Map<String, Object> buildMethodArguments(ProceedingJoinPoint pjp) {

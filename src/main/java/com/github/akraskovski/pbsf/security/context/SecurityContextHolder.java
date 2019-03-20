@@ -41,8 +41,4 @@ public final class SecurityContextHolder {
         Assert.notNull(context, "Only non-null SecurityContext instances are permitted");
         SecurityContextHolder.CONTEXT.set(context);
     }
-
-    private User createEmptyContext() {
-        return new User();
-    }
 }
